@@ -58,6 +58,8 @@ impl App {
     }
 
     pub fn run(&self, args: Vec<String>) {
+        let context = Context::new(args.clone(), self.help_text());
+
         if args.len() == 1usize {
             self.help();
             std::process::exit(1);
@@ -91,7 +93,7 @@ impl App {
 
                         match command.action {
                             Some(action) => {
-                                action(&Context::new(args[..1].to_vec(), self.help_text()));
+                                action(&Context::new(args[1..].to_vec(), command.help_text()));
                             }
                             None => {
                                 self.help();

@@ -96,7 +96,7 @@ impl Help for Command {
 
         match self.usage {
             Some(ref usage) => result += &format!("usage\n\t{}\n\n", usage),
-            None => result += &format!("usage\n\t{} --help\n\n", self.name),
+            None => {}
         };
 
         match self.subcommands {

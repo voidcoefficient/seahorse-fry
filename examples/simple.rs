@@ -1,4 +1,8 @@
-use seahorse_fry::{app::App, command::Command};
+use seahorse_fry::{
+    app::App,
+    command::Command,
+    flag::{Flag, FlagType},
+};
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -7,12 +11,20 @@ fn main() {
         .command(
             Command::new("foo")
                 .description("bar")
-                .subcommand(Command::new("baz").description("a simple desc"))
-                .action(|ctx| {
-                    dbg!(ctx.flags());
-                    dbg!(ctx.values());
-                    dbg!(ctx.value());
-                }),
+                .subcommand(
+                    Command::new("baz")
+                        .description("a simple desc")
+                        .usage("simple foo baz <STRING>")
+                        .flag(Flag::new("d", FlagType::String).description("does something"))
+                        .flag(Flag::new("p", FlagType::Bool).description("toggles"))
+                        .action(|ctx| {
+                            let toggle = ctx.get_boolean_flag("p");
+                            dbg!(&toggle);
+
+                            dbg!(&ctx);
+                        }),
+                )
+                .action(|ctx| {}),
         );
 
     app.run(args);
