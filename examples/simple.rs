@@ -18,10 +18,10 @@ fn main() {
                         .flag(Flag::new("d", FlagType::String).description("does something"))
                         .flag(Flag::new("p", FlagType::Bool).description("toggles"))
                         .action(|ctx| {
-                            let toggle = ctx.get_boolean_flag("p");
-                            dbg!(&toggle);
-
-                            dbg!(&ctx);
+                            let p = ctx
+                                .get_flag_value("p", FlagType::Bool)
+                                .unwrap_or(seahorse_fry::flag::FlagValue::Bool(false));
+                            dbg!(&p);
                         }),
                 )
                 .action(|ctx| {}),

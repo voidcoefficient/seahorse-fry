@@ -1,6 +1,8 @@
-use std::fmt::format;
-
-use crate::{help::Help, utils::normalize_args};
+use crate::{
+    flag::{Flag, FlagType, FlagValue},
+    help::Help,
+    utils::normalize_args,
+};
 
 #[derive(Debug)]
 pub struct Context {
@@ -36,7 +38,11 @@ impl Context {
         self.values().first().map(|value| value.to_owned())
     }
 
-    pub fn get_flag_value<S: Into<String>>(&self, flag_name: S) -> Option<String> {
+    pub fn get_flag_value<S: Into<String>>(
+        &self,
+        flag_name: S,
+        flag_type: FlagType,
+    ) -> Option<FlagValue> {
         let flag_name = flag_name.into();
 
         match self
@@ -44,7 +50,7 @@ impl Context {
             .iter()
             .position(|arg| arg == &format!("-{}", flag_name))
         {
-            Some(pos) => self.args.get(pos + 1).cloned(),
+            Some(pos) => Flag::extract_value(self.args.get(pos + 1).cloned(), flag_type),
             None => None,
         }
     }

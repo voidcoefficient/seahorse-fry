@@ -58,8 +58,6 @@ impl App {
     }
 
     pub fn run(&self, args: Vec<String>) {
-        let context = Context::new(args.clone(), self.help_text());
-
         if args.len() == 1usize {
             self.help();
             std::process::exit(1);
