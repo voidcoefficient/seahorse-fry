@@ -7,7 +7,12 @@ fn main() {
         .command(
             Command::new("foo")
                 .description("bar")
-                .action(|_| println!("from command foo!")),
+                .subcommand(Command::new("baz").description("a simple desc"))
+                .action(|ctx| {
+                    dbg!(ctx.flags());
+                    dbg!(ctx.values());
+                    dbg!(ctx.value());
+                }),
         );
 
     app.run(args);
