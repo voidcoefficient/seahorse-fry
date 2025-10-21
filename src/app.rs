@@ -1,4 +1,4 @@
-use crate::{action::Action, command::Command, help::Help};
+use crate::{action::Action, command::Command, context::Context, help::Help};
 
 #[derive(Default)]
 pub struct App {
@@ -44,12 +44,45 @@ impl App {
     }
 
     pub fn run(&self, args: Vec<String>) {
-        if args.len() == 0usize {
+        if args.len() == 1usize {
             self.help();
             std::process::exit(1);
         }
 
-        self.help();
+        let (_bin_path, args) = args.split_first().unwrap();
+        let (command_name, rest) = match args.to_vec().len() {
+            1 => args.split_at(1),
+            _ => args.split_at(1),
+        };
+        let command_name = match command_name.first() {
+            Some(command_name) => command_name,
+            None => {
+                self.help();
+                std::process::exit(1);
+            }
+        };
+
+        match self.commands {
+            Some(ref commands) => {
+                match commands.iter().find(|c| &c.name == command_name) {
+                    Some(command) => match command.action {
+                        Some(action) => {
+                            action(&Context::new(args.to_vec(), self.help_text()));
+                        }
+                        None => {
+                            self.help();
+                            std::process::exit(1);
+                        }
+                    },
+                    None => {}
+                };
+            }
+            None => {
+                self.help();
+                std::process::exit(1);
+            }
+        }
+
         std::process::exit(0);
     }
 }
@@ -63,12 +96,12 @@ impl Help for App {
         }
 
         match &self.usage {
-            Some(usage) => result += &format!("Usage:\n\t{}\n\n", usage),
-            None => result += &format!("Usage:\n\t{} --help\n\n", self.name),
+            Some(usage) => result += &format!("usage\n\t{}\n\n", usage),
+            None => result += &format!("usage\n\t{} --help\n\n", self.name),
         }
 
         if let Some(commands) = &self.commands {
-            result += "Commands:\n";
+            result += "commands\n";
             commands.iter().for_each(|c| match &c.description {
                 Some(description) => result += &format!("\t{}\t{}\n", c.name, description),
                 None => result += &format!("\t{}\n", c.name),

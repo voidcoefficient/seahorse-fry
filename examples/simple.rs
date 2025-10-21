@@ -7,7 +7,7 @@ fn main() {
         .command(
             Command::new("foo")
                 .description("bar")
-                .action(|| println!("from command foo!")),
+                .action(|_| println!("from command foo!")),
         );
 
     app.run(args);
