@@ -99,7 +99,10 @@ impl App {
                             }
                         }
                     }
-                    None => {}
+                    None => {
+                        self.help();
+                        std::process::exit(1);
+                    }
                 };
             }
             None => {
