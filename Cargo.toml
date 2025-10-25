@@ -4,5 +4,6 @@ description = "indirect fork of seahorse aiming completeness"
 authors = ["Marla Albuquerque <marla@albuque.com>"]
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
 
 [dependencies]
